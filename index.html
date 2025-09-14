@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Taschenrechner</title>
     <style>
+      :root {
+        --bg-calc: #d3d3d3;
+        --bg-calc-text: #fff;
+        --bg-btn: #c6dfc2;
+        --bg-opt-btn: #d29b49;
+        --text-opt-btn: #fff;
+      }
+
       /* 2. Reset */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-      }
-
-      body {
+        font-size: 1.2rem;
         font-family: "Courier New", Courier, monospace;
       }
 
@@ -21,13 +27,14 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-top: 1rem;
       }
 
       .calc-container {
-        background-color: lightgray;
+        background-color: var(--bg-calc);
         border-radius: 10px;
         padding: 1rem;
-        width: 200px;
+        width: 300px;
       }
 
       .btn-container {
@@ -39,58 +46,57 @@
 
       .numButton {
         border-radius: 100px;
-        border-color: #c6dfc2;
-        background-color: #c6dfc2;
+        border-color: var(--bg-btn);
+        background-color: var(--bg-btn);
         color: #000000;
         text-align: center;
-        width: 2rem;
+        width: 2.2rem;
         margin: 0.1rem;
       }
 
       .opButton {
         border-radius: 100px;
-        border-color: #d29b49;
-        background-color: #d29b49;
-        color: #ffffff;
+        border-color: var(--bg-opt-btn);
+        background-color: var(--bg-opt-btn);
+        color: var(--text-opt-btn);
         text-align: center;
-        width: 2rem;
+        width: 2.2rem;
         margin: 0.1rem;
       }
 
       .currentCalc {
-        background-color: #ffffff;
-        font-size: 0.8rem;
+        background-color: var(--bg-calc-text);
+        font-size: 1rem;
         text-align: right;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
       }
 
       .currentNumber {
-        background-color: #ffffff;
+        background-color: var(--bg-calc-text);
         text-align: right;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
-        margin-bottom: 1rem;
+        margin-bottom: 1.2rem;
       }
 
       .history-container {
-        border: 2px solid lightgray;
+        border: 2px solid var(--bg-calc);
         border-radius: 10px;
-        width: 200px;
-        height: 172px;
-        padding: 1rem;
+        width: 300px;
+        height: 245px;
+        padding: 0.8rem;
         overflow: auto;
       }
 
       .history-p {
-        font-size: 0.8rem;
+        font-size: 1rem;
         text-align: right;
       }
 
-      @media (min-width: 400px) {
+      @media (min-width: 600px) {
         .calc {
           flex-direction: row;
-          align-items: stretch;
         }
       }
     </style>
@@ -178,6 +184,7 @@
         if (calcArray.length < 2) {
           return;
         }
+
         let calcResult = 0;
         numberString = Number(numberString);
         calcArray.push(numberString);
@@ -186,7 +193,7 @@
         document.getElementById("currentNumber").innerHTML = calcResult;
         document.getElementById("currentCalc").innerHTML = "&nbsp;";
 
-        let historyEntry = `${calcArray[0]} ${calcArray[1]} ${calcArray[2]} = ${calcResult} <br>`;
+        let historyEntry = `${calcArray[0]} ${calcArray[1]} ${calcArray[2]} = <b>${calcResult}</b> <br>`;
 
         historyEntry += document.getElementById("history").innerHTML;
         document.getElementById("history").innerHTML = historyEntry;
