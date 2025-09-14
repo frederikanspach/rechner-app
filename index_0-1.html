@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taschenrechner</title>
+    <style>
+      /* 2. Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .calc {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .calc-container {
+        gap: 2rem;
+      }
+
+      .numButton {
+        border-radius: 100px;
+        border-color: #c6dfc2;
+        background-color: #c6dfc2;
+        color: #000000;
+        text-align: center;
+        width: 2rem;
+      }
+
+      .opButton {
+        border-radius: 100px;
+        border-color: #d29b49;
+        background-color: #d29b49;
+        color: #ffffff;
+        text-align: center;
+        width: 2rem;
+      }
+
+      .currentCalc {
+        font-size: 0.8rem;
+        text-align: right;
+      }
+
+      .currentNumber {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calc">
+      <div class="calc-container">
+        <p class="currentCalc" id="currentCalc">&nbsp;</p>
+        <p class="currentNumber" id="currentNumber">0</p>
+
+        <button class="numButton" onclick="insertNumber('7')">7</button>
+        <button class="numButton" onclick="insertNumber('8')">8</button>
+        <button class="numButton" onclick="insertNumber('9')">9</button>
+        <button class="opButton" onclick="operator('/')">/</button>
+        <br />
+        <button class="numButton" onclick="insertNumber('4')">4</button>
+        <button class="numButton" onclick="insertNumber('5')">5</button>
+        <button class="numButton" onclick="insertNumber('6')">6</button>
+        <button class="opButton" onclick="operator('*')">*</button>
+        <br />
+        <button class="numButton" onclick="insertNumber('1')">1</button>
+        <button class="numButton" onclick="insertNumber('2')">2</button>
+        <button class="numButton" onclick="insertNumber('3')">3</button>
+        <button class="opButton" onclick="operator('-')">-</button>
+        <br />
+        <button class="opButton" onclick="clearEntry()">CE</button>
+        <button class="numButton" onclick="insertNumber('0')">0</button>
+        <button class="opButton" onclick="result()">=</button>
+        <button class="opButton" onclick="operator('+')">+</button>
+      </div>
+
+      <div class="history-container">
+        <p id="history"></p>
+      </div>
+    </div>
+    <script>
+      "use strict";
+      let numberString = "";
+      let calcArray = [];
+
+      function insertNumber(number) {
+        numberString += number;
+        document.getElementById("currentNumber").innerHTML = numberString;
+      }
+
+      function operator(operator) {
+        numberString = Number(numberString);
+
+        calcArray.push(numberString);
+        calcArray.push(operator);
+
+        document.getElementById("currentCalc").innerHTML = calcArray;
+
+        // @@ Testausgabe
+        console.log(calcArray);
+
+        numberString = "";
+      }
+
+      function result() {
+        let calcResult = 0;
+        numberString = Number(numberString);
+        calcArray.push(numberString);
+
+        // @@ Testausgabe
+        console.log(calcArray);
+
+        calcResult = calculate(calcArray[0], calcArray[1], calcArray[2]);
+        document.getElementById("currentNumber").innerHTML = calcResult;
+        document.getElementById("currentCalc").innerHTML = "&nbsp;";
+
+        // @@ Testausgabe
+        console.log(calcResult);
+
+        numberString = "";
+        calcArray = [];
+      }
+
+      function calculate(firstNumber, operator, secondNumber) {
+        if (operator === "+") {
+          return firstNumber + secondNumber;
+        } else if (operator === "-") {
+          return firstNumber - secondNumber;
+        } else if (operator === "*") {
+          return firstNumber * secondNumber;
+        } else if (operator === "/") {
+          return firstNumber / secondNumber;
+        }
+      }
+
+      function clearEntry() {
+        numberString = "";
+        calcArray = [];
+      }
+    </script>
+  </body>
+</html>

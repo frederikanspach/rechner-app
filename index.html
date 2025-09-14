@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taschenrechner</title>
+    <style>
+      /* 2. Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .calc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .calc-container {
+        background-color: lightgray;
+        border-radius: 10px;
+        padding: 1rem;
+        width: 200px;
+      }
+
+      .btn-container {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+        gap: 0.1rem;
+      }
+
+      .numButton {
+        border-radius: 100px;
+        border-color: #c6dfc2;
+        background-color: #c6dfc2;
+        color: #000000;
+        text-align: center;
+        width: 2rem;
+        margin: 0.1rem;
+      }
+
+      .opButton {
+        border-radius: 100px;
+        border-color: #d29b49;
+        background-color: #d29b49;
+        color: #ffffff;
+        text-align: center;
+        width: 2rem;
+        margin: 0.1rem;
+      }
+
+      .currentCalc {
+        background-color: #ffffff;
+        font-size: 0.8rem;
+        text-align: right;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+
+      .currentNumber {
+        background-color: #ffffff;
+        text-align: right;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        margin-bottom: 1rem;
+      }
+
+      .history-container {
+        border: 2px solid lightgray;
+        border-radius: 10px;
+        width: 200px;
+        height: 172px;
+        padding: 1rem;
+        overflow: auto;
+      }
+
+      .history-p {
+        font-size: 0.8rem;
+        text-align: right;
+      }
+
+      @media (min-width: 400px) {
+        .calc {
+          flex-direction: row;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calc">
+      <div class="calc-container">
+        <p class="currentCalc" id="currentCalc">&nbsp;</p>
+        <p class="currentNumber" id="currentNumber">0</p>
+
+        <div class="btn-container">
+          <button class="numButton" onclick="insertNumber('7')">7</button>
+          <button class="numButton" onclick="insertNumber('8')">8</button>
+          <button class="numButton" onclick="insertNumber('9')">9</button>
+          <button class="opButton" onclick="operator('/')">/</button>
+        </div>
+        <div class="btn-container">
+          <button class="numButton" onclick="insertNumber('4')">4</button>
+          <button class="numButton" onclick="insertNumber('5')">5</button>
+          <button class="numButton" onclick="insertNumber('6')">6</button>
+          <button class="opButton" onclick="operator('*')">*</button>
+        </div>
+        <div class="btn-container">
+          <button class="numButton" onclick="insertNumber('1')">1</button>
+          <button class="numButton" onclick="insertNumber('2')">2</button>
+          <button class="numButton" onclick="insertNumber('3')">3</button>
+          <button class="opButton" onclick="operator('-')">-</button>
+        </div>
+        <div class="btn-container">
+          <button class="opButton" onclick="clearEntry()">CE</button>
+          <button class="numButton" onclick="insertNumber('0')">0</button>
+          <button class="opButton" onclick="result(true)">=</button>
+          <button class="opButton" onclick="operator('+')">+</button>
+        </div>
+      </div>
+
+      <div class="history-container">
+        <p class="history-p" id="history"></p>
+      </div>
+    </div>
+    <script>
+      "use strict";
+      let numberString = "";
+      let currentCalc = "&nbsp;";
+      let calcArray = [];
+      let newCalc = true;
+
+      function insertNumber(number) {
+        if (numberString.length >= 17) {
+          return;
+        }
+
+        if (newCalc) {
+          numberString = "";
+          calcArray = [];
+          currentCalc = "&nbsp;";
+        }
+
+        numberString += number;
+
+        document.getElementById("currentNumber").innerHTML = numberString;
+        newCalc = false;
+      }
+
+      function operator(operator, isNewCalc = false) {
+        if (calcArray.length > 1) {
+          result();
+        } else if (calcArray[0] === "0") {
+          return;
+        }
+
+        calcArray.push(Number(numberString));
+        calcArray.push(operator);
+
+        for (let arrayElement of calcArray) {
+          currentCalc += arrayElement;
+        }
+        document.getElementById("currentCalc").innerHTML = currentCalc;
+
+        document.getElementById("currentNumber").innerHTML = 0;
+        numberString = "";
+      }
+
+      function result(isNewCalc) {
+        if (calcArray.length < 2) {
+          return;
+        }
+        let calcResult = 0;
+        numberString = Number(numberString);
+        calcArray.push(numberString);
+
+        calcResult = calculate(calcArray[0], calcArray[1], calcArray[2]);
+        document.getElementById("currentNumber").innerHTML = calcResult;
+        document.getElementById("currentCalc").innerHTML = "&nbsp;";
+
+        let historyEntry = `${calcArray[0]} ${calcArray[1]} ${calcArray[2]} = ${calcResult} <br>`;
+
+        historyEntry += document.getElementById("history").innerHTML;
+        document.getElementById("history").innerHTML = historyEntry;
+
+        numberString = calcResult;
+        // Arrays resetten
+        calcArray.length = 0;
+        currentCalc = "&nbsp;";
+
+        if (isNewCalc) {
+          newCalc = true;
+          historyEntry = "<br>";
+          historyEntry += document.getElementById("history").innerHTML;
+          document.getElementById("history").innerHTML = historyEntry;
+        }
+      }
+
+      function calculate(firstNumber, operator, secondNumber) {
+        if (operator === "+") {
+          return firstNumber + secondNumber;
+        } else if (operator === "-") {
+          return firstNumber - secondNumber;
+        } else if (operator === "*") {
+          return firstNumber * secondNumber;
+        } else if (operator === "/") {
+          return firstNumber / secondNumber;
+        }
+      }
+
+      function clearEntry() {
+        numberString = "";
+        calcArray = [];
+        currentCalc = "&nbsp;";
+        newCalc = true;
+        document.getElementById("currentNumber").innerHTML = 0;
+        document.getElementById("currentCalc").innerHTML = "&nbsp;";
+        document.getElementById("history").innerHTML = "";
+      }
+    </script>
+  </body>
+</html>
