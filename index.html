@@ -70,6 +70,7 @@
         text-align: right;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
+        height: 1rem;
       }
 
       .currentNumber {
@@ -104,7 +105,7 @@
   <body>
     <div class="calc">
       <div class="calc-container">
-        <p class="currentCalc" id="currentCalc">&nbsp;</p>
+        <p class="currentCalc" id="currentCalc"></p>
         <p class="currentNumber" id="currentNumber">0</p>
 
         <div class="btn-container">
@@ -140,10 +141,11 @@
     <script>
       "use strict";
       let numberString = "";
-      let currentCalc = "&nbsp;";
+      let currentCalc = "";
       let calcArray = [];
       let newCalc = true;
 
+      // Fügt die einzelnt eingegebenen Zahlen zu einer zusammen
       function insertNumber(number) {
         if (numberString.length >= 17) {
           return;
@@ -152,15 +154,16 @@
         if (newCalc) {
           numberString = "";
           calcArray = [];
-          currentCalc = "&nbsp;";
+          currentCalc = "";
         }
 
         numberString += number;
 
-        document.getElementById("currentNumber").innerHTML = numberString;
+        writeInnerHTML("currentNumber", numberString);
         newCalc = false;
       }
 
+      // Guckt welcher Operator verwendet wird
       function operator(operator, isNewCalc = false) {
         if (calcArray.length > 1) {
           result();
@@ -174,12 +177,13 @@
         for (let arrayElement of calcArray) {
           currentCalc += arrayElement;
         }
-        document.getElementById("currentCalc").innerHTML = currentCalc;
+        writeInnerHTML("currentCalc", currentCalc);
 
-        document.getElementById("currentNumber").innerHTML = 0;
+        writeInnerHTML("currentNumber", 0);
         numberString = "";
       }
 
+      // Schreibt das Ergebnis
       function result(isNewCalc) {
         if (calcArray.length < 2) {
           return;
@@ -190,27 +194,28 @@
         calcArray.push(numberString);
 
         calcResult = calculate(calcArray[0], calcArray[1], calcArray[2]);
-        document.getElementById("currentNumber").innerHTML = calcResult;
-        document.getElementById("currentCalc").innerHTML = "&nbsp;";
+        writeInnerHTML("currentNumber", calcResult);
+        writeInnerHTML("currentCalc", "");
 
         let historyEntry = `${calcArray[0]} ${calcArray[1]} ${calcArray[2]} = <b>${calcResult}</b> <br>`;
 
         historyEntry += document.getElementById("history").innerHTML;
-        document.getElementById("history").innerHTML = historyEntry;
+        writeInnerHTML("history", historyEntry);
 
         numberString = calcResult;
         // Arrays resetten
         calcArray.length = 0;
-        currentCalc = "&nbsp;";
+        currentCalc = "";
 
         if (isNewCalc) {
           newCalc = true;
           historyEntry = "<br>";
           historyEntry += document.getElementById("history").innerHTML;
-          document.getElementById("history").innerHTML = historyEntry;
+          writeInnerHTML("history", historyEntry);
         }
       }
 
+      // Führt die Rechnung durch
       function calculate(firstNumber, operator, secondNumber) {
         if (operator === "+") {
           return firstNumber + secondNumber;
@@ -223,14 +228,20 @@
         }
       }
 
+      // Setzt den Taschenrechner zurück
       function clearEntry() {
         numberString = "";
         calcArray = [];
-        currentCalc = "&nbsp;";
+        currentCalc = "";
         newCalc = true;
-        document.getElementById("currentNumber").innerHTML = 0;
-        document.getElementById("currentCalc").innerHTML = "&nbsp;";
-        document.getElementById("history").innerHTML = "";
+        writeInnerHTML("currentNumber", 0);
+        writeInnerHTML("currentCalc", "");
+        writeInnerHTML("history", "");
+      }
+
+      // Schreibt die Werte in die HTML-IDs
+      function writeInnerHTML(htmlID, value) {
+        document.getElementById(htmlID).innerHTML = value;
       }
     </script>
   </body>
